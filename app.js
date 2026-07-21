@@ -11,14 +11,14 @@ let dadosEscala = {};
 
 function desenharTabela(){
     let conteudoHtml = "<tr>";
-    conteudoHtml += "<th>Funções</th>";
+    conteudoHtml += "<th>Designações</th>";
     
     for(let i = 1; i <= domingos; i++){
         conteudoHtml += `<th>Domingo ${i}</th>`;  
     }
     conteudoHtml += "</tr>"; 
 
-    conteudoHtml += "<td></td>"
+    conteudoHtml += "<td>(Clique 2 vezes no espaço em branco)</td>"
 
     for(let i = 1; i <= domingos; i++){
         conteudoHtml += `<td><button onclick="gerarAta(${i})">Gerar</button></td>`;
@@ -38,6 +38,17 @@ function desenharTabela(){
     
     tabela.innerHTML = conteudoHtml;
 
+       // Adiciona a linha do botão Limpar no final do HTML gerado
+conteudoHtml += `
+    <tr>
+        <td colspan="6" style="text-align: center; padding: 10px;">
+            <button id="btn-limpar">Limpar escala</button>
+        </td>
+    </tr>
+`;
+
+tabela.innerHTML = conteudoHtml;
+
 tabela.addEventListener("input", function(evento){
     let itemId = evento.target.id;
     let valor = evento.target.value;
@@ -45,9 +56,9 @@ tabela.addEventListener("input", function(evento){
     dadosEscala[itemId] = valor;
 
     localStorage.setItem("minha-tabela", JSON.stringify(dadosEscala));
-})
-    
-}
+
+ 
+})}
 desenharTabela();
 
 function carregarTabela(){
@@ -82,30 +93,30 @@ function lerDados(funcao, domingo){
 
 function gerarAta(domingo){
 
-let textoAta = `Reunião Sacramental Ala Dom Pedro II
+let textoAta = `<h1>Reunião Sacramental Ala Dom Pedro II</h1>
+<p class="sub">Data: ___/___/___ - Frequência: [    ]</p>
+<B>Presidida:</B> ${lerDados("Presidida", domingo)}
+<B>Dirigida:</B> ${lerDados("Dirigida", domingo)}
+<B>Reconhecimentos:</B> ${lerDados("Reconhecimentos", domingo)}
+<B>Anúncios:</B> ${lerDados("Anúncios", domingo)}
+<B>1° Hino:</B> ${lerDados("1° Hino", domingo)}
+<B>Regente:</B> ${lerDados("Regente", domingo)}
+<B>Organista:</B> ${lerDados("Organista", domingo)}
+<B>1° Oração:</B> ${lerDados("1° oração", domingo)}
+<B>-------------------------------------------------------------------------------------------------------</B>
+<B>Chamados, Desobrigações e Ordenanças:</B> ${lerDados("Chamados, Desobrigações e Ordenanças", domingo)}
 
-Data: ___/___/___
-
-Presidida: ${lerDados("Presidida", domingo)}
-Dirigida: ${lerDados("Dirigida", domingo)}
-Reconhecimentos: ${lerDados("Reconhecimentos", domingo)}
-Anúncios: ${lerDados("Anúncios", domingo)}
-1° Hino: ${lerDados("1° Hino", domingo)}
-Regente: ${lerDados("Regente", domingo)}
-Organista: ${lerDados("Organista", domingo)}
-1° Oração: ${lerDados("1° oração", domingo)}
-Chamados, Desobrigações e Ordenanças: ${lerDados("Chamados, Desobrigações e Ordenanças", domingo)}
-Hino Sacramental: ${lerDados("Hino sacramental", domingo)}
-Após o hino o sacramento será abençoado e distribuido a todos.
-
-1° Orador: ${lerDados("1° orador", domingo)}
-2° Orador: ${lerDados("2° orador", domingo)}
-Hino Intermediário: ${lerDados("Hino intermediário", domingo)}
-Ultimo Orador: ${lerDados("Ultimo orador", domingo)}
-Ultimo Hino: ${lerDados("Ultimo hino", domingo)}
-Ultima Oração: ${lerDados("Ultima oração", domingo)}
-
-Frequência: ___
+<B>SACRAMENTO</B>
+<B>Hino Sacramental:</B> ${lerDados("Hino sacramental", domingo)}
+<B>Após o hino o sacramento será abençoado e distribuido a todos.</B>
+<B>-------------------------------------------------------------------------------------------------------</B>
+<B>1° Orador:</B> ${lerDados("1° orador", domingo)}
+<B>2° Orador:</B> ${lerDados("2° orador", domingo)}
+<B>Hino Intermediário:</B> ${lerDados("Hino intermediário", domingo)}
+<B>-------------------------------------------------------------------------------------------------------</B>
+<B>Ultimo Orador:</B> ${lerDados("Ultimo orador", domingo)}
+<B>Ultimo Hino:</B>${lerDados("Ultimo hino", domingo)}
+<B>Ultima Oração</B> ${lerDados("Ultima oração", domingo)}
 `;
 
 let janelaImpressao = window.open("");
@@ -114,11 +125,24 @@ janelaImpressao.document.write(
     @media print{
     .no-print{display: none;}}
     .ata{
-    font-size: 20px;
+    font-size: 16px;
     line-height: 1.6;
     font-family: Arial, sans-serif;
     padding: 20px;
     white-space: pre-wrap;}
+    h1{
+    text-align: center;
+    text-tranform: uppercase;
+    font-size: 24px;
+    padding: 0 !important;
+    margin-bottom: 0;}
+    .sub{
+     text-align: center;
+     margin-top: 0;
+     padding: 0 !important;
+    }
+     @page{
+     margin: 1cm;}
     </style>
     <pre class="ata">
     ${textoAta}
@@ -128,3 +152,48 @@ janelaImpressao.document.write(
 
 return textoAta;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modalContainer = document.getElementById('modal-container');
+    const modalTextarea = document.getElementById('modal-textarea');
+    const btnSalvar = document.getElementById('btn-salvar');
+    const btnCancelar = document.getElementById('btn-cancelar');
+
+    let celulaAtual = null;
+
+    // Escuta duplo clique em qualquer textarea da tabela
+    document.querySelectorAll('.tabela textarea').forEach(textarea => {
+        textarea.addEventListener('dblclick', (event) => {
+            celulaAtual = event.target;
+            modalTextarea.value = celulaAtual.value;
+            modalContainer.classList.add('ativo');
+            modalTextarea.focus();
+        });
+    });
+
+    // Ação para Salvar o texto no campo original
+    btnSalvar.addEventListener('click', () => {
+        if (celulaAtual) {
+            celulaAtual.value = modalTextarea.value;
+        }
+        fecharModal();
+    });
+
+    // Ação para Cancelar
+    btnCancelar.addEventListener('click', () => {
+        fecharModal();
+    });
+
+    // Fecha o modal ao clicar fora da caixa branca
+    modalContainer.addEventListener('click', (event) => {
+        if (event.target === modalContainer) {
+            fecharModal();
+        }
+    });
+
+    function fecharModal() {
+        modalContainer.classList.remove('ativo');
+        celulaAtual = null;
+        modalTextarea.value = '';
+    }
+});
