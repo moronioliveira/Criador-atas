@@ -38,27 +38,39 @@ function desenharTabela(){
     
     tabela.innerHTML = conteudoHtml;
 
-       // Adiciona a linha do botão Limpar no final do HTML gerado
-conteudoHtml += `
-    <tr>
-        <td colspan="6" style="text-align: center; padding: 10px;">
-            <button id="btn-limpar">Limpar escala</button>
-        </td>
-    </tr>
-`;
+    conteudoHtml += `
+        <tr>
+            <td colspan="6" style="text-align: center; padding: 10px;">
+                <button id="btn-limpar">Limpar escala</button>
+            </td>
+        </tr>
+    `;
 
-tabela.innerHTML = conteudoHtml;
+   
+    tabela.innerHTML = conteudoHtml;
 
-tabela.addEventListener("input", function(evento){
-    let itemId = evento.target.id;
-    let valor = evento.target.value;
+    
+    tabela.addEventListener("input", function(evento){
+        let itemId = evento.target.id;
+        let valor = evento.target.value;
 
-    dadosEscala[itemId] = valor;
+        dadosEscala[itemId] = valor;
+        localStorage.setItem("minha-tabela", JSON.stringify(dadosEscala));
+    });
+} 
 
-    localStorage.setItem("minha-tabela", JSON.stringify(dadosEscala));
+const modal = document.getElementById("meu-modal");
+if (modal) {
+    modal.addEventListener("input", function(evento) {
+        let itemId = evento.target.id;
+        let valor = evento.target.value;
 
- 
-})}
+        dadosEscala[itemId] = valor;
+
+        localStorage.setItem("minha-tabela", JSON.stringify(dadosEscala));
+    });
+}
+
 desenharTabela();
 
 function carregarTabela(){
@@ -71,10 +83,7 @@ function carregarTabela(){
     let nomeDigitado = dadosEscala[idDoInput];
     if (document.getElementById(idDoInput) != null) {
          document.getElementById(idDoInput).value = nomeDigitado;
-    }
-   
-   }
-   }
+    }}}
 }
 carregarTabela();
 
@@ -112,8 +121,8 @@ let textoAta = `<h1>Reunião Sacramental Ala Dom Pedro II</h1>
 <B>-------------------------------------------------------------------------------------------------------</B>
 <B>1° Orador:</B> ${lerDados("1° orador", domingo)}
 <B>2° Orador:</B> ${lerDados("2° orador", domingo)}
-<B>Hino Intermediário:</B> ${lerDados("Hino intermediário", domingo)}
 <B>-------------------------------------------------------------------------------------------------------</B>
+<B>Hino Intermediário:</B> ${lerDados("Hino intermediário", domingo)}
 <B>Ultimo Orador:</B> ${lerDados("Ultimo orador", domingo)}
 <B>Ultimo Hino:</B>${lerDados("Ultimo hino", domingo)}
 <B>Ultima Oração</B> ${lerDados("Ultima oração", domingo)}
@@ -161,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let celulaAtual = null;
 
-    // Escuta duplo clique em qualquer textarea da tabela
     document.querySelectorAll('.tabela textarea').forEach(textarea => {
         textarea.addEventListener('dblclick', (event) => {
             celulaAtual = event.target;
@@ -171,20 +179,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Ação para Salvar o texto no campo original
     btnSalvar.addEventListener('click', () => {
-        if (celulaAtual) {
-            celulaAtual.value = modalTextarea.value;
-        }
-        fecharModal();
-    });
+    if (celulaAtual) {
+        celulaAtual.value = modalTextarea.value;
 
-    // Ação para Cancelar
+        let itemId = celulaAtual.id;
+        dadosEscala[itemId] = modalTextarea.value;
+        localStorage.setItem("minha-tabela", JSON.stringify(dadosEscala));
+    }
+    fecharModal();
+});
+
     btnCancelar.addEventListener('click', () => {
         fecharModal();
     });
 
-    // Fecha o modal ao clicar fora da caixa branca
     modalContainer.addEventListener('click', (event) => {
         if (event.target === modalContainer) {
             fecharModal();
