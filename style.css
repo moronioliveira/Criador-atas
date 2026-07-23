@@ -9,13 +9,36 @@
     --cor3: #003057;
     --cor4: #01b6d1;
 }
-.tabela{
-    background-color: black;
-    color: #fff;
-    border: 1px solid var(--cor3);
+
+html, body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Remove as barras de rolagem */
+}
+
+.container.mensal {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.tabela {
     width: 100%;
-    height: 100%;
-    border-left: 6px var(--cor1);
+    height: 100vh;
+    border-collapse: collapse;
+}
+
+.tabela th, 
+.tabela td {
+    padding: 2px 4px !important; /* Reduz o espaçamento interno */
+    font-size: 13px; /* Reduz levemente a fonte se necessário */
+}
+
+.tabela textarea {
+    height: 22px !important; /* Diminui a altura do campo para encolher as linhas */
+    resize: none; /* Desativa o redimensionamento manual */
 }
 th{
     background-color: var(--cor3);
@@ -39,6 +62,14 @@ textarea{
 
 textarea:hover{
     border: 2px solid var(--cor4);
+}
+
+.tabela tr td:first-child {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 16px;       
+    font-weight: bold;     
+    padding: 0 10px;       
 }
 
 
