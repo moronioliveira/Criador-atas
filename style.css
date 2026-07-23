@@ -181,10 +181,18 @@ button:hover{
     html, body {
         height: auto;
         overflow-y: auto;   
-        overflow-x: hidden;
+        overflow-x: auto;
+        
     }
 
     .container.mensal {
+        height: auto;
+         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tabela {
+        min-width: 750px; 
         height: auto;
     }
 }
